@@ -2,8 +2,12 @@ package com.gogitek.toeictest.service.impl;
 
 import com.gogitek.toeictest.config.exception.ErrorCode;
 import com.gogitek.toeictest.config.exception.ToeicRuntimeException;
+import com.gogitek.toeictest.config.pagination.OffsetPageRequest;
+import com.gogitek.toeictest.config.pagination.PaginationPage;
 import com.gogitek.toeictest.controller.dto.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.CreateQuestionRequest;
+import com.gogitek.toeictest.controller.dto.request.QuestionFilter;
+import com.gogitek.toeictest.controller.dto.response.AdminQuestionResponse;
 import com.gogitek.toeictest.entity.ExamEntity;
 import com.gogitek.toeictest.entity.ExamQuestionEntity;
 import com.gogitek.toeictest.mapper.QuestionMapper;
@@ -11,9 +15,14 @@ import com.gogitek.toeictest.repository.ExamQuestionRepository;
 import com.gogitek.toeictest.repository.ExamRepository;
 import com.gogitek.toeictest.repository.ExamTypeRepository;
 import com.gogitek.toeictest.repository.QuestionRepository;
+import com.gogitek.toeictest.security.custom.TokenAuthenticationFilter;
 import com.gogitek.toeictest.service.AdminService;
+
 import javax.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +38,7 @@ public class AdminServiceImpl implements AdminService {
     private final ExamTypeRepository examTypeRepository;
     private final ExamQuestionRepository examQuestionRepository;
     private final ExamRepository examRepository;
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
     @Override
     @Transactional
     public void createQuestion(List<CreateQuestionRequest> request) {
@@ -53,8 +62,36 @@ public class AdminServiceImpl implements AdminService {
                 .duration(request.getDuration())
                 .build();
         entity = examRepository.save(entity);
-        var questionIds = request.getQuestionIds();
-        insertRelationTable(entity, questionIds);
+        try {
+            var questionIds = request.getQuestionIds();
+            insertRelationTable(entity, questionIds);
+        }catch (Exception e){
+            LOGGER.info("Dont have question, message: {}", e.getMessage());
+        }
+    }
+
+    @Override
+    public PaginationPage<AdminQuestionResponse> retrieveListQuestionAdmin(QuestionFilter filter) {
+        var pageable = new OffsetPageRequest(filter.getOffset(), filter.getLimit());
+        var questionList = questionRepository.findByPartIn(filter.getParts(), pageable);
+        return new PaginationPage<AdminQuestionResponse>()
+                .setLimit(filter.getLimit())
+                .setOffset(filter.getOffset())
+                .setTotalRecords(questionList.getTotalElements())
+                .setRecords(questionList
+                        .getContent()
+                        .stream()
+                        .map(questionMapper::entityToAdminResponse)
+                        .toList());
+    }
+
+    @Override
+    public AdminQuestionResponse modifyQuestion(AdminQuestionResponse response) {
+        var entity = questionRepository
+                .findById(response.getId())
+                .orElseThrow(() -> new ToeicRuntimeException(ErrorCode.ID_NOT_FOUND));
+        questionMapper.mapRequestToEntity(entity, response);
+        return questionMapper.entityToAdminResponse(entity);
     }
 
     @Transactional

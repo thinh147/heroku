@@ -1,5 +1,6 @@
 package com.gogitek.toeictest.repository;
 
+import com.gogitek.toeictest.constant.Part;
 import com.gogitek.toeictest.entity.QuestionEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,4 +19,6 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
             "left join e.examType et " +
             "where et.id = :typeId")
     Page<QuestionEntity> findByExamTypeId(@Param("typeId") Long typeId, Pageable pageable);
+
+    Page<QuestionEntity> findByPartIn(List<Part> parts, Pageable pageable);
 }

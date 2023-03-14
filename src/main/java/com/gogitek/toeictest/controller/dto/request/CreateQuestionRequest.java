@@ -1,5 +1,6 @@
 package com.gogitek.toeictest.controller.dto.request;
 
+import com.gogitek.toeictest.constant.Part;
 import com.gogitek.toeictest.constant.QuestionType;
 import lombok.*;
 
@@ -24,4 +25,6 @@ public class CreateQuestionRequest {
     private String choiceD;
 
     private String trueAnswer;
+
+    private Part part;
 }

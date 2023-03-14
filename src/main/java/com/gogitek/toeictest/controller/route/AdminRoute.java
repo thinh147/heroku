@@ -6,5 +6,6 @@ public class AdminRoute {
     public static final String PAYMENT_LIST = "/payments";
     public static final String APPROVED = "/approved/{id}";
     public static final String REJECTED = "/rejected/{id}";
-
+    public static final String QUESTION_LIST = "/questions";
+    public static final String EDIT_QUESTION = "/questions/edit";
 }

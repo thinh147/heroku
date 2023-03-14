@@ -6,23 +6,18 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class QuestionResponse {
+public class AdminQuestionResponse {
+    private Long id;
     private QuestionType type;
-
     private String detail;
-
     private String mediaPath;
-
     private String choiceA;
-
     private String choiceB;
-
     private String choiceC;
-
     private String choiceD;
-
+    private String trueAnswer;
     private Part part;
 }

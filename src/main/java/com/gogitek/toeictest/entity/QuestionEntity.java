@@ -1,5 +1,6 @@
 package com.gogitek.toeictest.entity;
 
+import com.gogitek.toeictest.constant.Part;
 import com.gogitek.toeictest.constant.QuestionType;
 import com.gogitek.toeictest.entity.base.BaseEntity;
 import javax.persistence.*;
@@ -40,6 +41,10 @@ public class QuestionEntity extends BaseEntity {
 
     @Column(name = "true_answer")
     private String trueAnswer;
+
+    @Column(name = "part")
+    @Enumerated(EnumType.STRING)
+    private Part part;
 
     @OneToMany(mappedBy = "questionEntity", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ExamQuestionEntity> examQuestionEntityList;

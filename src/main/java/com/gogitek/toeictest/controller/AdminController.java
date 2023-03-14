@@ -3,6 +3,8 @@ package com.gogitek.toeictest.controller;
 import com.gogitek.toeictest.config.response.ResponseEntityBuilder;
 import com.gogitek.toeictest.controller.dto.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.CreateQuestionRequest;
+import com.gogitek.toeictest.controller.dto.request.QuestionFilter;
+import com.gogitek.toeictest.controller.dto.response.AdminQuestionResponse;
 import com.gogitek.toeictest.controller.route.AdminRoute;
 import com.gogitek.toeictest.controller.route.BaseRoute;
 import com.gogitek.toeictest.service.AdminService;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -62,4 +65,21 @@ public class AdminController {
                 .setDetails("Approve Successfully!")
                 .build();
     }
+
+    @GetMapping(AdminRoute.QUESTION_LIST)
+    public ResponseEntity<?> questionList(@Valid QuestionFilter filter) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.retrieveListQuestionAdmin(filter))
+                .build();
+    }
+
+    @PostMapping(AdminRoute.EDIT_QUESTION)
+    public ResponseEntity<?> editQuestion(@RequestBody AdminQuestionResponse request) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.modifyQuestion(request))
+                .build();
+    }
+
 }
