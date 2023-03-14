@@ -2,7 +2,6 @@ package com.gogitek.toeictest.service.impl;
 
 import com.gogitek.toeictest.config.exception.ErrorCode;
 import com.gogitek.toeictest.config.exception.ToeicRuntimeException;
-import com.gogitek.toeictest.config.pagination.OffsetPageRequest;
 import com.gogitek.toeictest.config.pagination.PaginationPage;
 import com.gogitek.toeictest.controller.dto.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.CreateQuestionRequest;
@@ -15,7 +14,6 @@ import com.gogitek.toeictest.repository.ExamQuestionRepository;
 import com.gogitek.toeictest.repository.ExamRepository;
 import com.gogitek.toeictest.repository.ExamTypeRepository;
 import com.gogitek.toeictest.repository.QuestionRepository;
-import com.gogitek.toeictest.security.custom.TokenAuthenticationFilter;
 import com.gogitek.toeictest.service.AdminService;
 
 import javax.transaction.Transactional;
@@ -23,10 +21,10 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,11 +70,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public PaginationPage<AdminQuestionResponse> retrieveListQuestionAdmin(QuestionFilter filter) {
-        var pageable = new OffsetPageRequest(filter.getOffset(), filter.getLimit());
+        var pageable = PageRequest.of(filter.getPage(), filter.getSize());
         var questionList = questionRepository.findByPartIn(filter.getParts(), pageable);
         return new PaginationPage<AdminQuestionResponse>()
-                .setLimit(filter.getLimit())
-                .setOffset(filter.getOffset())
+                .setLimit(filter.getSize())
+                .setOffset(filter.getPage())
                 .setTotalRecords(questionList.getTotalElements())
                 .setRecords(questionList
                         .getContent()

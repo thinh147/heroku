@@ -39,12 +39,12 @@ public class AdminController {
     }
 
     @GetMapping(AdminRoute.PAYMENT_LIST)
-    public ResponseEntity<?> retrieveListPayment(@RequestParam(name = "offset", defaultValue = "0") Integer offset,
-                                                 @RequestParam(name = "limit", defaultValue = "10") Integer limit,
+    public ResponseEntity<?> retrieveListPayment(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                                 @RequestParam(name = "size", defaultValue = "10") Integer size,
                                                  @RequestParam(name = "phoneNumber", defaultValue = "") String phoneNumber) {
         return ResponseEntityBuilder
                 .getBuilder()
-                .setDetails(paymentService.retrieveListResponseAdmin(offset, limit, phoneNumber))
+                .setDetails(paymentService.retrieveListResponseAdmin(page, size, phoneNumber))
                 .build();
     }
 

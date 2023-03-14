@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionFilter {
-    private Integer offset = 0;
-    private Integer limit = 10;
+    private Integer page = 0;
+    private Integer size = 10;
     private List<Part> parts = new ArrayList<>();
 }
