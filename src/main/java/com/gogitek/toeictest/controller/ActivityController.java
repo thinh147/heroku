@@ -32,12 +32,22 @@ public class ActivityController {
     }
 
     @GetMapping(ActivitiesRoute.LIST_QUESTION)
-    public ResponseEntity<?> getListQuestionByType(@PathVariable Long typeId,
+    public ResponseEntity<?> getListQuestionByExam(@PathVariable Long examId,
                                                    @RequestParam(name = "offset", defaultValue = "0") Integer offset,
                                                    @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
         return ResponseEntityBuilder
                 .getBuilder()
-                .setDetails(activitiesService.retrieveQuestionByTypeId(typeId, offset, limit))
+                .setDetails(activitiesService.retrieveQuestionByExamId(examId, offset, limit))
+                .build();
+    }
+
+    @GetMapping(ActivitiesRoute.LIST_EXAMS)
+    public ResponseEntity<?> getListExam(@PathVariable Long typeId,
+                                         @RequestParam(name = "offset", defaultValue = "0") Integer offset,
+                                         @RequestParam(name = "limit", defaultValue = "10") Integer limit) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(activitiesService.retrieveExamsByTypeId(typeId, offset, limit))
                 .build();
     }
 }

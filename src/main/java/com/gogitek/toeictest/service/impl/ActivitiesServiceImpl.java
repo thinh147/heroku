@@ -2,12 +2,15 @@ package com.gogitek.toeictest.service.impl;
 
 import com.gogitek.toeictest.config.pagination.OffsetPageRequest;
 import com.gogitek.toeictest.config.pagination.PaginationPage;
+import com.gogitek.toeictest.controller.dto.response.ExamResponse;
 import com.gogitek.toeictest.controller.dto.response.ExamTypeResponse;
 import com.gogitek.toeictest.controller.dto.response.QuestionResponse;
 import com.gogitek.toeictest.controller.dto.response.VocabGroupResponse;
+import com.gogitek.toeictest.entity.ExamEntity;
 import com.gogitek.toeictest.mapper.ExamMapper;
 import com.gogitek.toeictest.mapper.QuestionMapper;
 import com.gogitek.toeictest.mapper.VocabularyMapper;
+import com.gogitek.toeictest.repository.ExamRepository;
 import com.gogitek.toeictest.repository.ExamTypeRepository;
 import com.gogitek.toeictest.repository.GroupRepository;
 import com.gogitek.toeictest.repository.QuestionRepository;
@@ -26,6 +29,7 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     private final ExamMapper examMapper;
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
+    private final ExamRepository examRepository;
     @Override
     public PaginationPage<VocabGroupResponse> retrieveGroupPage(Integer offset, Integer limit) {
         var pageable = new OffsetPageRequest(offset, limit);
@@ -48,9 +52,9 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     }
 
     @Override
-    public PaginationPage<QuestionResponse> retrieveQuestionByTypeId(Long typeId, Integer offset, Integer limit) {
+    public PaginationPage<QuestionResponse> retrieveQuestionByExamId(Long examId, Integer offset, Integer limit) {
         var pageable = new OffsetPageRequest(offset, limit);
-        var entityList = questionRepository.findByExamTypeId(typeId, pageable);
+        var entityList = questionRepository.findByExamId(examId, pageable);
         return new PaginationPage<QuestionResponse>()
                 .setLimit(limit)
                 .setOffset(offset)
@@ -61,4 +65,13 @@ public class ActivitiesServiceImpl implements ActivitiesService {
                         .map(questionMapper::entityToResponse)
                         .toList());
     }
+
+    @Override
+    public PaginationPage<ExamResponse> retrieveExamsByTypeId(Long typeId, Integer offset, Integer limit) {
+        var pageable = new OffsetPageRequest(offset, limit);
+        var entity = examRepository.findByExamTypeId(typeId, pageable);
+        return null;
+    }
+
+
 }

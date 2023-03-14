@@ -16,9 +16,8 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     @Query(value = "SELECT q from QuestionEntity q " +
             "left join q.examQuestionEntityList eq " +
             "left join eq.examEntity e " +
-            "left join e.examType et " +
-            "where et.id = :typeId")
-    Page<QuestionEntity> findByExamTypeId(@Param("typeId") Long typeId, Pageable pageable);
+            "where e.id = :examId")
+    Page<QuestionEntity> findByExamId(@Param("examId") Long examId, Pageable pageable);
 
     Page<QuestionEntity> findByPartIn(List<Part> parts, Pageable pageable);
 }
