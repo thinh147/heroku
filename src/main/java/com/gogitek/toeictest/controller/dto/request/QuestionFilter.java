@@ -14,5 +14,5 @@ import java.util.List;
 public class QuestionFilter {
     private Integer page = 0;
     private Integer size = 10;
-    private List<Part> parts = new ArrayList<>();
+    private List<Part> parts = List.of(Part.values());
 }
