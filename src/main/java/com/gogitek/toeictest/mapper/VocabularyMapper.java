@@ -1,6 +1,9 @@
 package com.gogitek.toeictest.mapper;
 
+import com.gogitek.toeictest.controller.dto.request.CreateVocabularyGroup;
+import com.gogitek.toeictest.controller.dto.response.AdminVocabularyItemResponse;
 import com.gogitek.toeictest.controller.dto.response.VocabGroupResponse;
+import com.gogitek.toeictest.controller.dto.response.VocabularyGroupAdminResponse;
 import com.gogitek.toeictest.controller.dto.response.VocabularyItemResponse;
 import com.gogitek.toeictest.entity.VocabularyGroupEntity;
 import com.gogitek.toeictest.entity.VocabularyItemEntity;
@@ -27,4 +30,8 @@ public interface VocabularyMapper {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    VocabularyGroupAdminResponse entityToResponse(VocabularyGroupEntity entity);
+    VocabularyGroupEntity groupDtoToEntity(CreateVocabularyGroup group);
+    AdminVocabularyItemResponse entityToDto(VocabularyItemEntity itemEntity);
 }

@@ -1,15 +1,15 @@
 package com.gogitek.toeictest.controller.dto.response;
-import lombok.*;
+
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class VocabularyItemResponse {
+public class AdminVocabularyItemResponse {
     private Long id;
     private String word;
     private String pronunciation;
     private String audioPath;
     private String description;
+    private VocabularyGroupAdminResponse group;
 }

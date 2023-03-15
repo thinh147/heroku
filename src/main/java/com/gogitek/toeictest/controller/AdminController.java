@@ -2,8 +2,7 @@ package com.gogitek.toeictest.controller;
 
 import com.gogitek.toeictest.config.response.ResponseEntityBuilder;
 import com.gogitek.toeictest.controller.dto.ExamRequest;
-import com.gogitek.toeictest.controller.dto.request.CreateQuestionRequest;
-import com.gogitek.toeictest.controller.dto.request.QuestionFilter;
+import com.gogitek.toeictest.controller.dto.request.*;
 import com.gogitek.toeictest.controller.dto.response.AdminQuestionResponse;
 import com.gogitek.toeictest.controller.route.AdminRoute;
 import com.gogitek.toeictest.controller.route.BaseRoute;
@@ -82,4 +81,35 @@ public class AdminController {
                 .build();
     }
 
+    @PostMapping(AdminRoute.CREATE_GROUP)
+    public ResponseEntity<?> createGroupVocabulary(@RequestBody CreateVocabularyGroup request) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.createVocabularyGroup(request))
+                .build();
+    }
+
+    @PostMapping(AdminRoute.CREATE_ITEM)
+    public ResponseEntity<?> createItemVocabulary(@RequestBody CreateVocabularyRequest request) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.createVocabulary(request))
+                .build();
+    }
+
+    @GetMapping(AdminRoute.LIST_GROUP)
+    public ResponseEntity<?> retrieveGroupList() {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.retrieveGroupVocabulary())
+                .build();
+    }
+
+    @GetMapping(AdminRoute.LIST_ITEM)
+    public ResponseEntity<?> createItemVocabulary(@Valid VocabItemAdminFilter filter) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.retrieveListItemVocab(filter))
+                .build();
+    }
 }
