@@ -3,10 +3,7 @@ package com.gogitek.toeictest.service;
 import com.gogitek.toeictest.config.pagination.PaginationPage;
 import com.gogitek.toeictest.controller.dto.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.*;
-import com.gogitek.toeictest.controller.dto.response.AdminQuestionResponse;
-import com.gogitek.toeictest.controller.dto.response.AdminVocabularyItemResponse;
-import com.gogitek.toeictest.controller.dto.response.VocabularyGroupAdminResponse;
-import com.gogitek.toeictest.controller.dto.response.VocabularyItemResponse;
+import com.gogitek.toeictest.controller.dto.response.*;
 
 import java.util.List;
 
@@ -19,4 +16,6 @@ public interface AdminService {
     VocabularyItemResponse createVocabulary(CreateVocabularyRequest request);
     PaginationPage<AdminVocabularyItemResponse> retrieveListItemVocab(VocabItemAdminFilter filter);
     List<VocabularyGroupAdminResponse> retrieveGroupVocabulary();
+    PaginationPage<UserAdminResponse> retrieveUserForAdminPage(Integer page, Integer size, String name);
+    PaginationPage<ExamResponse> retrieveExamsForAdminPage(Integer page, Integer size);
 }

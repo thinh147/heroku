@@ -19,6 +19,9 @@ public class ExamTypeEntity extends BaseEntity {
     @Column(name = "exam_type_description")
     private String description;
 
+    @Column(name = "question_quantity")
+    private Long quantity;
+
     @OneToMany(mappedBy = "examType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ExamEntity> exams = new ArrayList<>();
 }

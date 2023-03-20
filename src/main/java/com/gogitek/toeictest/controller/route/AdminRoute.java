@@ -12,4 +12,6 @@ public class AdminRoute {
     public static final String CREATE_ITEM = "/vocabularies/item/create";
     public static final String LIST_GROUP = "/vocabularies/group";
     public static final String LIST_ITEM = "/vocabularies/item";
+    public static final String USER_LIST = "/user-lists";
+    public static final String EXAM_LIST = "/exam-lists";
 }

@@ -7,7 +7,9 @@ import com.gogitek.toeictest.constant.Roles;
 import com.gogitek.toeictest.controller.dto.request.LoginRequest;
 import com.gogitek.toeictest.controller.dto.response.LoginResponse;
 import com.gogitek.toeictest.entity.UserEntity;
+import com.gogitek.toeictest.mapper.UserMapper;
 import com.gogitek.toeictest.repository.UserRepository;
+import com.gogitek.toeictest.security.SecurityUtils;
 import com.gogitek.toeictest.security.custom.JwtTokenUtil;
 import com.gogitek.toeictest.service.AuthService;
 import com.gogitek.toeictest.service.RefreshTokenService;
@@ -27,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
@@ -41,7 +44,9 @@ public class AuthServiceImpl implements AuthService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             var refreshTokenEntity = refreshTokenService.createRefreshToken();
             refreshTokenService.save(refreshTokenEntity);
-            return new LoginResponse(token, refreshTokenEntity.getToken(), jwtTokenUtil.getDuration());
+            var user = userRepository.findByUsername(loginRequest.getPhoneNumber());
+            var profiles = userMapper.entityToResponse(user.get());
+            return new LoginResponse(token, refreshTokenEntity.getToken(), jwtTokenUtil.getDuration(), profiles);
         } catch (Exception e) {
             throw new ToeicRuntimeException(ErrorCode.USER_NAME_PASSWORD_NOT_MATCH);
         }
@@ -67,6 +72,6 @@ public class AuthServiceImpl implements AuthService {
         var token = this.jwtTokenUtil.generateToken(entity.getUsername());
         var refreshTokenEntity = refreshTokenService.createRefreshToken();
         refreshTokenService.save(refreshTokenEntity);
-        return new LoginResponse(token, refreshTokenEntity.getToken(), jwtTokenUtil.getDuration());
+        return new LoginResponse(token, refreshTokenEntity.getToken(), jwtTokenUtil.getDuration(), userMapper.entityToResponse(entity));
     }
 }

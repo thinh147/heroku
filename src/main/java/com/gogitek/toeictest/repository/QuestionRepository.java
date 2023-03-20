@@ -20,4 +20,7 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     Page<QuestionEntity> findByExamId(@Param("examId") Long examId, Pageable pageable);
 
     Page<QuestionEntity> findByPartIn(List<Part> parts, Pageable pageable);
+
+    @Query(value = "SELECT q from QuestionEntity q ORDER BY RAND()")
+    List<QuestionEntity> findRandomRecords(long quantity);
 }

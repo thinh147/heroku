@@ -16,10 +16,13 @@ public class LoginResponse {
 
     private Long expiryDuration;
 
-    public LoginResponse(String accessToken, String refreshToken, Long expiryDuration) {
+    private UserProfiles profiles;
+
+    public LoginResponse(String accessToken, String refreshToken, Long expiryDuration, UserProfiles profiles) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiryDuration = expiryDuration;
         tokenType = "Bearer ";
+        this.profiles = profiles;
     }
 }

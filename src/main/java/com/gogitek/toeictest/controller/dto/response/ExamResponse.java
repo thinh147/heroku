@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ExamResponse {
+    private Long id;
     private Long duration;
     private String description;
 }

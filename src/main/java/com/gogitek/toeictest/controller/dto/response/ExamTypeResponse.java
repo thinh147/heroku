@@ -10,4 +10,5 @@ import lombok.*;
 public class ExamTypeResponse {
     private Long id;
     private String description;
+    private Long quantity;
 }

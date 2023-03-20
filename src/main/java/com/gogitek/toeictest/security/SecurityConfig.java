@@ -82,7 +82,10 @@ public class SecurityConfig {
                         "/**/*.jpg",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js").permitAll()
+                        "/**/*.js",
+                        "/static/**",
+                        "/resources/static/**",
+                        "/resources/templates/**").permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs")
                 .permitAll()
                 .antMatchers("/api/auth/**", "/api/files/**").permitAll()

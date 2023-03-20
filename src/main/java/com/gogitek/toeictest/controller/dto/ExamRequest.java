@@ -15,5 +15,4 @@ public class ExamRequest {
     private String description;
 
     private Long typeId;
-    private List<Long> questionIds;
 }

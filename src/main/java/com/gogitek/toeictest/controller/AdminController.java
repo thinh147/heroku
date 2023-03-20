@@ -112,4 +112,23 @@ public class AdminController {
                 .setDetails(adminService.retrieveListItemVocab(filter))
                 .build();
     }
+
+    @GetMapping(AdminRoute.USER_LIST)
+    public ResponseEntity<?> getListUSer(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                         @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                         @RequestParam(name = "name", defaultValue = "") String name){
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.retrieveUserForAdminPage(page, size, name))
+                .build();
+    }
+
+    @GetMapping(AdminRoute.EXAM_LIST)
+    public ResponseEntity<?> getListExams(@RequestParam(name = "page", defaultValue = "0") Integer page,
+                                          @RequestParam(name = "size", defaultValue = "10") Integer size){
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(adminService.retrieveExamsForAdminPage(page, size))
+                .build();
+    }
 }

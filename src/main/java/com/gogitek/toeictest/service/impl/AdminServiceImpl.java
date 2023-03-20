@@ -5,13 +5,12 @@ import com.gogitek.toeictest.config.exception.ToeicRuntimeException;
 import com.gogitek.toeictest.config.pagination.PaginationPage;
 import com.gogitek.toeictest.controller.dto.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.*;
-import com.gogitek.toeictest.controller.dto.response.AdminQuestionResponse;
-import com.gogitek.toeictest.controller.dto.response.AdminVocabularyItemResponse;
-import com.gogitek.toeictest.controller.dto.response.VocabularyGroupAdminResponse;
-import com.gogitek.toeictest.controller.dto.response.VocabularyItemResponse;
+import com.gogitek.toeictest.controller.dto.response.*;
 import com.gogitek.toeictest.entity.ExamEntity;
 import com.gogitek.toeictest.entity.ExamQuestionEntity;
+import com.gogitek.toeictest.entity.QuestionEntity;
 import com.gogitek.toeictest.entity.VocabularyItemEntity;
+import com.gogitek.toeictest.mapper.ExamMapper;
 import com.gogitek.toeictest.mapper.QuestionMapper;
 import com.gogitek.toeictest.mapper.VocabularyMapper;
 import com.gogitek.toeictest.repository.*;
@@ -40,6 +39,7 @@ public class AdminServiceImpl implements AdminService {
     private final VocabularyMapper vocabularyMapper;
     private final GroupRepository groupRepository;
     private final VocabRepository vocabRepository;
+    private final ExamMapper examMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
     @Override
     @Transactional
@@ -65,8 +65,9 @@ public class AdminServiceImpl implements AdminService {
                 .build();
         entity = examRepository.save(entity);
         try {
-            var questionIds = request.getQuestionIds();
-            insertRelationTable(entity, questionIds);
+            var quantity = typeEntity.getQuantity();
+            var questionEntityList = questionRepository.findRandomRecords(quantity);
+            insertRelationTable(entity, questionEntityList);
         }catch (Exception e){
             LOGGER.info("Dont have question, message: {}", e.getMessage());
         }
@@ -100,8 +101,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public VocabularyGroupAdminResponse createVocabularyGroup(CreateVocabularyGroup group) {
         var vocabEntity = vocabularyMapper.groupDtoToEntity(group);
-        vocabEntity = groupRepository.save(vocabEntity);
-        return vocabularyMapper.entityToResponse(vocabEntity);
+        return vocabularyMapper
+                .entityToResponse(
+                        groupRepository.save(vocabEntity)
+                );
     }
 
     @Override
@@ -118,8 +121,10 @@ public class AdminServiceImpl implements AdminService {
                 .audioPath(request.getAudioPath())
                 .description(request.getDescription())
                 .build();
+        vocabRepository.save(item);
         return VocabularyItemResponse
                 .builder()
+                .id(item.getId())
                 .word(item.getWord())
                 .audioPath(item.getAudioPath())
                 .description(item.getDescription())
@@ -155,10 +160,25 @@ public class AdminServiceImpl implements AdminService {
                 .toList();
     }
 
+    @Override
+    public PaginationPage<UserAdminResponse> retrieveUserForAdminPage(Integer page, Integer size, String name) {
+        return null;
+    }
+
+    @Override
+    public PaginationPage<ExamResponse> retrieveExamsForAdminPage(Integer page, Integer size) {
+        var pageable = PageRequest.of(page, size);
+        var pageExam = examRepository.findAll(pageable);
+        return new PaginationPage<ExamResponse>()
+                .setOffset(page)
+                .setLimit(size)
+                .setTotalRecords(pageExam.getTotalElements())
+                .setRecords(pageExam.getContent().stream().map(examMapper::entityToResponse).toList());
+    }
+
     @Transactional
     @Async
-    protected void insertRelationTable(final ExamEntity examEntity, List<Long> questionIds) {
-        var questionList = questionRepository.findByIdIn(questionIds);
+    protected void insertRelationTable(final ExamEntity examEntity, List<QuestionEntity> questionList) {
         var relation = questionList
                 .stream()
                 .map(item -> ExamQuestionEntity
