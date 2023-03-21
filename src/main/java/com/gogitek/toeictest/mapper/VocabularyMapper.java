@@ -23,6 +23,7 @@ public interface VocabularyMapper {
     default List<VocabularyItemResponse> mapVocab(List<VocabularyItemEntity> entity) {
         return entity.stream().map(item -> VocabularyItemResponse
                         .builder()
+                        .id(item.getId())
                         .word(item.getWord())
                         .audioPath(item.getAudioPath())
                         .description(item.getDescription())
