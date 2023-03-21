@@ -30,6 +30,7 @@ public class ActivitiesServiceImpl implements ActivitiesService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
     private final ExamRepository examRepository;
+
     @Override
     public PaginationPage<VocabGroupResponse> retrieveGroupPage(Integer offset, Integer limit) {
         var pageable = new OffsetPageRequest(offset, limit);
@@ -68,9 +69,17 @@ public class ActivitiesServiceImpl implements ActivitiesService {
 
     @Override
     public PaginationPage<ExamResponse> retrieveExamsByTypeId(Long typeId, Integer offset, Integer limit) {
-        var pageable = new OffsetPageRequest(offset, limit);
+        final var pageable = new OffsetPageRequest(offset, limit);
         var entity = examRepository.findByExamTypeId(typeId, pageable);
-        return null;
+        return new PaginationPage<ExamResponse>()
+                .setTotalRecords(entity.getTotalElements())
+                .setLimit(limit)
+                .setOffset(offset)
+                .setRecords(entity
+                        .getContent()
+                        .stream()
+                        .map(examMapper::entityToResponse)
+                        .toList());
     }
 
 
