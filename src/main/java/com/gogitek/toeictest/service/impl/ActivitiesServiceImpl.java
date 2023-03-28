@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,10 +94,14 @@ public class ActivitiesServiceImpl implements ActivitiesService {
         final var userRequest = SecurityUtils.requester().orElseThrow(() -> new ToeicRuntimeException(ErrorCode.UNAUTHORIZED));
         var examEntity = examRepository.findById(examId).orElseThrow(() -> new ToeicRuntimeException(ErrorCode.ID_NOT_FOUND));
         var questionRelationList = examEntity.getExamQuestionList();
-        var questionMap = questionRelationList
+        var questionList = questionRelationList
                 .stream()
                 .map(ExamQuestionEntity::getQuestionEntity)
-                .collect(Collectors.toMap(IdBase::getId, QuestionEntity::getTrueAnswer));
+                .toList();
+        var questionMap = new HashMap<Long, String>();
+        for(var q : questionList) {
+            questionMap.put(q.getId(), q.getTrueAnswer());
+        }
         int count = 0;
         for (var item : requests) {
             var key = item.getQuestionId();

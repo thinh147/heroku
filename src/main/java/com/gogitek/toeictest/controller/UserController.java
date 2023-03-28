@@ -6,6 +6,7 @@ import com.gogitek.toeictest.controller.dto.request.RechargeRequest;
 import com.gogitek.toeictest.controller.route.BaseRoute;
 import com.gogitek.toeictest.controller.route.UserRoute;
 import com.gogitek.toeictest.service.PaymentService;
+import com.gogitek.toeictest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final PaymentService paymentService;
+    private final UserService userService;
 
     @PostMapping(UserRoute.PAYMENT)
     public ResponseEntity<?> payment(@RequestBody CreatePaymentRequest request){
@@ -27,7 +29,18 @@ public class UserController {
 
     @GetMapping(UserRoute.HISTORY)
     public ResponseEntity<?> history(){
-        return ResponseEntityBuilder.getBuilder().build();
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(userService.getListHistory())
+                .build();
+    }
+
+    @GetMapping(UserRoute.HISTORY_DETAIL)
+    public ResponseEntity<?> historyDetail(@PathVariable Long historyId){
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(userService.retrieveHistoryDetail(historyId))
+                .build();
     }
 
     @GetMapping(UserRoute.TRANSACTION)

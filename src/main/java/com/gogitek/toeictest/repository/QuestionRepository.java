@@ -8,10 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> {
-    List<QuestionEntity> findByIdIn(List<Long> ids);
+    List<QuestionEntity> findByIdIn(Collection<Long> ids);
 
     @Query(value = "SELECT q from QuestionEntity q " +
             "left join q.examQuestionEntityList eq " +
@@ -23,4 +24,5 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
 
     @Query(value = "SELECT q from QuestionEntity q ORDER BY RAND()")
     List<QuestionEntity> findRandomRecords(long quantity);
+
 }

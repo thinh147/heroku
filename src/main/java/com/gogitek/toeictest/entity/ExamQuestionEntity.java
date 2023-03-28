@@ -17,11 +17,11 @@ public class ExamQuestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "exam_id", referencedColumnName = "id")
     private ExamEntity examEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id")
     private QuestionEntity questionEntity;
 }
