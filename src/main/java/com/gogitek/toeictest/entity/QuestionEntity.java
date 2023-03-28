@@ -23,6 +23,9 @@ public class QuestionEntity extends BaseEntity {
     @Column(name = "question_detail", columnDefinition = "TEXT")
     private String detail;
 
+    @Column(name = "image", columnDefinition = "TEXT")
+    private String image;
+
     @Column(name = "media_path", columnDefinition = "TEXT")
     private String mediaPath;
 

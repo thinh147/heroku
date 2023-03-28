@@ -15,6 +15,7 @@ public class CreateQuestionRequest {
     private String detail;
 
     private String mediaPath;
+    private String image;
 
     private String choiceA;
 

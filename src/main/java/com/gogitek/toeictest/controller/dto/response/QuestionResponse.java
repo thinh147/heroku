@@ -10,11 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class QuestionResponse {
+    private Long id;
     private QuestionType type;
 
     private String detail;
 
     private String mediaPath;
+    private String image;
 
     private String choiceA;
 
