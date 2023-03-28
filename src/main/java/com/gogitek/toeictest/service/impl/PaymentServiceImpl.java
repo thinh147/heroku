@@ -8,10 +8,13 @@ import com.gogitek.toeictest.constant.Level;
 import com.gogitek.toeictest.constant.PaymentStatus;
 import com.gogitek.toeictest.constant.Period;
 import com.gogitek.toeictest.controller.dto.response.PaymentResponse;
+import com.gogitek.toeictest.controller.dto.response.UserAdminResponse;
+import com.gogitek.toeictest.controller.dto.response.UserProfiles;
 import com.gogitek.toeictest.entity.ExpiredTimePayment;
 import com.gogitek.toeictest.entity.PaymentEntity;
 import com.gogitek.toeictest.entity.UserEntity;
 import com.gogitek.toeictest.mapper.PaymentMapper;
+import com.gogitek.toeictest.mapper.UserMapper;
 import com.gogitek.toeictest.repository.ExpiredTimePaymentRepository;
 import com.gogitek.toeictest.repository.PaymentRepository;
 import com.gogitek.toeictest.repository.UserRepository;
@@ -23,6 +26,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -33,16 +37,19 @@ public class PaymentServiceImpl implements PaymentService {
     private final UserRepository userRepository;
     private final ExpiredTimePaymentRepository expiredTimePaymentRepository;
     private final PaymentMapper paymentMapper;
+    private final UserMapper userMapper;
 
     @Override
     public void createPayment(Period period) {
         var requester = SecurityUtils.requester().orElseThrow(() -> new ToeicRuntimeException(ErrorCode.UNAUTHORIZED));
         var paymentEntity = buildPayment(requester.user(), period);
         paymentRepository.save(paymentEntity);
+        approvePayment(paymentEntity.getId());
         buildExpiredDate(requester.getId(), period);
     }
 
     @Override
+    @Async
     public void approvePayment(Long paymentId) {
         var paymentEntity = paymentRepository
                 .findById(paymentId)
@@ -98,14 +105,38 @@ public class PaymentServiceImpl implements PaymentService {
                 .setTotalRecords(paymentEntityList.size());
     }
 
+    @Override
+    public void recharge(Double value) {
+        if(value == null || value < 0){
+            throw new ToeicRuntimeException(ErrorCode.VALIDATION_ERROR);
+        }
+        var requestor = SecurityUtils.requester()
+                .orElseThrow(() -> new ToeicRuntimeException(ErrorCode.UNAUTHORIZED));
+        var userEntity = requestor.user();
+        var remainingMoney = userEntity.getRemainingMoney();
+        if(remainingMoney == null) {
+            remainingMoney = new BigDecimal(0);
+        }
+        remainingMoney = remainingMoney.add(new BigDecimal(value));
+        userEntity.setRemainingMoney(remainingMoney);
+        userRepository.save(userEntity);
+    }
+
+    @Override
+    public UserProfiles retrieveCurrentUserInformation() {
+        var requestor = SecurityUtils.requester().orElseThrow(() -> new ToeicRuntimeException(ErrorCode.UNAUTHORIZED));
+        var user = requestor.user();
+        return userMapper.entityToResponse(user);
+    }
+
     private PaymentEntity buildPayment(UserEntity requester, Period period) {
 
-        var term = Period.getPeriodInt(period);
         var periodValue = getCostByPeriod(period);
-
-        if (term != null) {
-            periodValue = periodValue * term;
+        if(periodValue.compareTo(requester.getRemainingMoney().doubleValue()) < 0){
+            throw new ToeicRuntimeException(ErrorCode.NOT_ENOUGH_MONEY);
         }
+
+        subtractMoney(requester, periodValue);
 
         return PaymentEntity
                 .builder()
@@ -125,7 +156,7 @@ public class PaymentServiceImpl implements PaymentService {
             case THREE_MONTH -> {
                 return 4000D;
             }
-            case FOREVER -> {
+            case SIX_MONTH -> {
                 return 390000D;
             }
             default -> throw new ToeicRuntimeException(ErrorCode.VALIDATION_ERROR);
@@ -143,14 +174,24 @@ public class PaymentServiceImpl implements PaymentService {
     protected void buildExpiredDate(Long userId, Period period) {
         var term = Period.getPeriodInt(period);
         var now = LocalDateTime.now();
-        if (term != null) {
-            var expiredDate = now.plus(term, ChronoUnit.MONTHS);
-            var expiredEntity = ExpiredTimePayment
-                    .builder()
-                    .expiredDate(expiredDate)
-                    .userId(userId)
-                    .build();
-            expiredTimePaymentRepository.save(expiredEntity);
+        var expiredDate = now.plus(term, ChronoUnit.MONTHS);
+        var expiredEntity = ExpiredTimePayment
+                .builder()
+                .expiredDate(expiredDate)
+                .userId(userId)
+                .build();
+        expiredTimePaymentRepository.save(expiredEntity);
+    }
+
+    @Async
+    protected void subtractMoney(UserEntity user, Double money){
+        var remaining = user.getRemainingMoney();
+        if(remaining.doubleValue() < money) {
+            throw new ToeicRuntimeException(ErrorCode.NOT_ENOUGH_MONEY);
         }
+        var res = remaining.doubleValue() - money;
+        var resInDecimal = new BigDecimal(res);
+        user.setRemainingMoney(resInDecimal);
+        userRepository.save(user);
     }
 }

@@ -1,6 +1,8 @@
 package com.gogitek.toeictest.repository;
 
 import com.gogitek.toeictest.entity.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +23,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Transactional
     @Modifying
     void updateUserLevel(@Param("userIds") List<Long> userIds);
+
+    @Query(value = "SELECT u from UserEntity u " +
+            "WHERE u.phoneNumber LIKE %:name% " +
+            "OR u.username LIKE %:name% " +
+            "OR u.lastName LIKE %:name%")
+    Page<UserEntity> retrieveUserListForAdmin(@Param("name") String name, Pageable pageable);
 }

@@ -1,7 +1,7 @@
 package com.gogitek.toeictest.constant;
 
 public enum Period {
-    ONE_MONTH, THREE_MONTH, FOREVER;
+    ONE_MONTH, THREE_MONTH, SIX_MONTH;
 
     public static Integer getPeriodInt(Period period) {
         if(period.equals(ONE_MONTH)) {
@@ -12,6 +12,6 @@ public enum Period {
             return 3;
         }
 
-        return null;
+        return 6;
     }
 }

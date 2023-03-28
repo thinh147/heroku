@@ -2,6 +2,7 @@ package com.gogitek.toeictest.controller;
 
 import com.gogitek.toeictest.config.response.ResponseEntityBuilder;
 import com.gogitek.toeictest.controller.dto.request.CreatePaymentRequest;
+import com.gogitek.toeictest.controller.dto.request.RechargeRequest;
 import com.gogitek.toeictest.controller.route.BaseRoute;
 import com.gogitek.toeictest.controller.route.UserRoute;
 import com.gogitek.toeictest.service.PaymentService;
@@ -40,6 +41,15 @@ public class UserController {
 
     @GetMapping(UserRoute.USER_INFORMATION)
     public ResponseEntity<?> information(){
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(paymentService.retrieveCurrentUserInformation())
+                .build();
+    }
+
+    @PostMapping(UserRoute.RECHARGE)
+    public ResponseEntity<?> recharge(@RequestBody RechargeRequest request) {
+        paymentService.recharge(request.getTotalMoney());
         return ResponseEntityBuilder
                 .getBuilder()
                 .build();

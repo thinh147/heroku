@@ -5,6 +5,7 @@ import com.gogitek.toeictest.constant.Level;
 import com.gogitek.toeictest.constant.Roles;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -27,4 +28,5 @@ public class UserProfiles {
 
     private Roles role;
     private Level level;
+    private BigDecimal remainingMoney;
 }

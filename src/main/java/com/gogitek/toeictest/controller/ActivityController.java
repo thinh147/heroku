@@ -1,12 +1,15 @@
 package com.gogitek.toeictest.controller;
 
 import com.gogitek.toeictest.config.response.ResponseEntityBuilder;
+import com.gogitek.toeictest.controller.dto.request.SubmitRequest;
 import com.gogitek.toeictest.controller.route.ActivitiesRoute;
 import com.gogitek.toeictest.controller.route.BaseRoute;
 import com.gogitek.toeictest.service.ActivitiesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(BaseRoute.BASE_ENDPOINT + BaseRoute.ACTIVITIES_BASE)
@@ -48,6 +51,15 @@ public class ActivityController {
         return ResponseEntityBuilder
                 .getBuilder()
                 .setDetails(activitiesService.retrieveExamsByTypeId(typeId, offset, limit))
+                .build();
+    }
+
+    @PostMapping(ActivitiesRoute.SUBMIT)
+    public ResponseEntity<?> submit(@PathVariable Long examId,
+                                    @RequestBody List<SubmitRequest> request) {
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails(activitiesService.submitResponse(examId, request))
                 .build();
     }
 }

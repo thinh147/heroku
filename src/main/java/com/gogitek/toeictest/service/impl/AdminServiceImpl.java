@@ -12,6 +12,7 @@ import com.gogitek.toeictest.entity.QuestionEntity;
 import com.gogitek.toeictest.entity.VocabularyItemEntity;
 import com.gogitek.toeictest.mapper.ExamMapper;
 import com.gogitek.toeictest.mapper.QuestionMapper;
+import com.gogitek.toeictest.mapper.UserMapper;
 import com.gogitek.toeictest.mapper.VocabularyMapper;
 import com.gogitek.toeictest.repository.*;
 import com.gogitek.toeictest.service.AdminService;
@@ -40,6 +41,8 @@ public class AdminServiceImpl implements AdminService {
     private final GroupRepository groupRepository;
     private final VocabRepository vocabRepository;
     private final ExamMapper examMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
     @Override
     @Transactional
@@ -162,7 +165,20 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public PaginationPage<UserAdminResponse> retrieveUserForAdminPage(Integer page, Integer size, String name) {
-        return null;
+        if(name == null) {
+            name = "";
+        }
+        var pageable = PageRequest.of(page, size);
+        var userList = userRepository.retrieveUserListForAdmin(name, pageable);
+
+        return new PaginationPage<UserAdminResponse>()
+                .setOffset(page)
+                .setLimit(size)
+                .setTotalRecords(userList.getTotalElements())
+                .setRecords(userList.getContent()
+                        .stream()
+                        .map(userMapper::entityToAdminResponse)
+                        .toList());
     }
 
     @Override

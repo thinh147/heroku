@@ -17,7 +17,9 @@ public enum ErrorCode implements CommonErrorCode {
     VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "001", "validation.error"),
     ALREADY_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "500", "Account already exist!"),
     USER_NAME_PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "400", "Username or password not match!"),
-    JWT_CLAIM_EMPTY(HttpStatus.UNAUTHORIZED, "401", "Claim empty");
+    JWT_CLAIM_EMPTY(HttpStatus.UNAUTHORIZED, "401", "Claim empty"),
+    NOT_ENOUGH_MONEY(HttpStatus.INTERNAL_SERVER_ERROR, "506", "Not enough money");
+
 
     private final HttpStatus status;
     private final String code;

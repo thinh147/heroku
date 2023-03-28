@@ -7,6 +7,7 @@ import com.gogitek.toeictest.entity.base.BaseEntity;
 import javax.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,4 +61,7 @@ public class UserEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "adminEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PaymentEntity> paymentAdminEntities = new ArrayList<>();
+
+    @Column(name = "remaining_money")
+    private BigDecimal remainingMoney = new BigDecimal(0);
 }

@@ -5,4 +5,5 @@ public class ActivitiesRoute {
     public static final String TYPE_URL = "/types";
     public static final String LIST_QUESTION = "/questions/{examId}";
     public static final String LIST_EXAMS = "/exams/{typeId}";
+    public static final String SUBMIT = "/submit/{examId}";
 }

@@ -22,5 +22,5 @@ public class UserAnswerEntity extends BaseEntity {
     private UserEntity userEntity;
 
     @Column(name = "exam_id")
-    private String examId;
+    private Long examId;
 }
