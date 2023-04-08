@@ -1,0 +1,166 @@
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <!-- filter -->
+        <div class="m-4 ms-5 me-5">
+            <div (keydown.enter)="onSearch(1, currentSearchParam.pageSize)">
+                <form #formFilter="ngForm" class="mb-3 d-flex">
+                    <div class="d-flex align-items-center " style="min-width: 15rem;">
+                        <label for="id" class="text-nowrap me-1">Name: </label>
+                        <input class="form-control form-control-sm" ngModel name="name">
+                    </div>
+                    <div class="ms-auto  d-flex align-items-center justify-content-end">
+                        <button class="me-auto d-flex" type="button" class="btn btn-sm shadow-none btn-primary"
+                            (click)="onSearch(1, currentSearchParam.pageSize)">
+                            Search
+                        </button>
+                        <div>
+                            <!-- <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                                (click)="openModalCreate('create',null)">
+                                New User
+                            </button> -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="m-3 ms-5 me-5">
+            <table class="table table-sm table-bordered">
+                <thead class="table-light fw-light">
+                    <tr fw-light>
+                        <th class="fw-light">Id</th>
+                        <th class="fw-light">fullName</th>
+                        <th class="fw-light">level</th>
+                        <th class="fw-light">phoneNumber</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tbody" *ngFor="let user of users">
+                        <td>{{user.id}}</td>
+                        <td>{{user.fullName}}</td>
+                        <td>{{user.level}}</td>
+                        <td>{{user.phoneNumber}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- pagination -->
+            <div [hidden]="currentSearchParam.numFound===null && currentSearchParam.numFound<=0">
+                <div class="d-flex">
+                    <div class="ms-auto">
+                        <ngb-pagination [collectionSize]="currentSearchParam?.numFound"
+                            [page]="currentSearchParam?.currentPage"
+                            (pageChange)="onChangePage($event, currentSearchParam?.pageSize)"
+                            [pageSize]="currentSearchParam?.pageSize" [maxSize]="3" [rotate]="true" [ellipses]="false"
+                            [boundaryLinks]="true">
+                        </ngb-pagination>
+                    </div>
+                    <div class="ms-4">
+                        <select class="form-control" [(ngModel)]="currentSearchParam.pageSize"
+                            (change)="onChangePage(1, currentSearchParam?.pageSize)">
+                            <option *ngFor="let item of [].constructor(5); let i = index" [value]="(i + 1) * 10">
+                                {{(i + 1) * 10}}/ <div>trang</div>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #modalCreate let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Question</h4>
+        <button id="btnCloseModalEdit" type="button" class="btn btn-outline-dark btn-sm" aria-label="Close"
+            (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form class="container-fluid" [formGroup]="formCreate">
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">type</label>
+                <!-- <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('type').invalid&&(formCreate.get('type').touched ||formCreate.get('type').dirty)}"
+                    formControlName="type" /> -->
+                <select class="form-select form-select-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('type').invalid&&(formCreate.get('type').touched ||formCreate.get('type').dirty)}"
+                    formControlName="type" name="" id="">
+                    <option value="READING">READING</option>
+                    <option value="WRITING">WRITING</option>
+                    <option value="LISTENING">LISTENING</option>
+                    <option value="SPEAKING">SPEAKING</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">detail</label>
+                <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('detail').invalid &&(formCreate.get('detail').touched ||formCreate.get('detail').dirty)}"
+                    formControlName="detail" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">mediaPath</label>
+                <input type="text" class="form-control form-control-sm" formControlName="mediaPath" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">choiceA</label>
+                <input type="text" class="form-control form-control-sm" formControlName="choiceA" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">choiceB</label>
+                <input type="text" class="form-control form-control-sm" formControlName="choiceB" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">choiceC</label>
+                <input type="text" class="form-control form-control-sm" formControlName="choiceC" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">choiceD</label>
+                <input type="text" class="form-control form-control-sm" formControlName="choiceD" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">trueAnswer</label>
+                <!-- <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('trueAnswer').invalid&&(formCreate.get('trueAnswer').touched ||formCreate.get('trueAnswer').dirty)}"
+                    formControlName="trueAnswer" /> -->
+                <select class="form-select form-select-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('trueAnswer').invalid&&(formCreate.get('trueAnswer').touched ||formCreate.get('trueAnswer').dirty)}"
+                    formControlName="trueAnswer" name="" id="">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">part</label>
+                <select class="form-select form-select-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('part').invalid&&(formCreate.get('part').touched ||formCreate.get('part').dirty)}"
+                    formControlName="part" name="" id="">
+                    <option value="P1">P1</option>
+                    <option value="P2">P2</option>
+                    <option value="P3">P3</option>
+                    <option value="P4">P4</option>
+                    <option value="P5">P5</option>
+                    <option value="P6">P6</option>
+                    <option value="P7">P7</option>
+                </select>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="me-auto">
+            <button type="button" class="btn btn-sm btn-primary" (click)="onSubmit()">
+                Save
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="modal.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</ng-template>

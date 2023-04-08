@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-light border-bottom border-dark container-fluid"
+    style="background-color: white">
+    <div class="ms-4 d-flex">
+        <a [routerLink]="['/question']" [ngClass]="{'text-primary': sidebarState==='question'}"
+            class="ps-4 list-group-item " style="padding: 16px 24px;">
+            <i class="bi bi-columns-gap me-3" title="Job Indexing"></i>
+            <span>Question Management</span>
+        </a>
+        <a [routerLink]="['/user']" [ngClass]="{'text-primary': sidebarState==='user'}" class="ps-4 list-group-item "
+            style="padding: 16px 24px;">
+            <i class="bi bi-layout-text-window-reverse me-3" title="Job Crawler"></i>
+            <span>User Management</span>
+        </a>
+        <a [routerLink]="['/payment']" [ngClass]="{'text-primary': sidebarState==='payment'}" class="ps-4 list-group-item "
+            style="padding: 16px 24px;">
+            <i class="bi bi-layout-text-window-reverse me-3" title="Job Crawler"></i>
+            <span>Payment Management</span>
+        </a>
+        <a [routerLink]="['/exam']" [ngClass]="{'text-primary': sidebarState==='exam'}" class="ps-4 list-group-item "
+            style="padding: 16px 24px;">
+            <i class="bi bi-layout-text-window-reverse me-3" title="Job Crawler"></i>
+            <span>Exam Management</span>
+        </a>
+        <a [routerLink]="['/vocabulary']" [ngClass]="{'text-primary': sidebarState==='vocabulary'}"
+            class="ps-4 list-group-item " style="padding: 16px 24px;">
+            <i class="bi bi-layout-text-window-reverse me-3" title="Job Crawler"></i>
+            <span>Vocabulary Management</span>
+        </a>
+    </div>
+    <div class="ms-auto p-2">
+        <div class="btn-group" ngbDropdown role="group">
+            <button class="btn " ngbDropdownToggle>
+                <i class="bi bi-person-circle"></i>
+                {{getUser()}}
+            </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+                <button ngbDropdownItem style="padding-left: 8px;">My profile</button>
+                <!-- <button ngbDropdownItem style="padding-left: 8px;">Setting</button> -->
+                <button ngbDropdownItem style="padding-left: 8px;">
+                    Setting
+                </button>
+                <button ngbDropdownItem style="padding-left: 8px;" (click)="onLogout()">Log Out</button>
+            </div>
+        </div>
+    </div>
+</nav>

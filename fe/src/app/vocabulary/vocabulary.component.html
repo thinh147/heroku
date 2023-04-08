@@ -1,0 +1,182 @@
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <!-- filter -->
+        <div class="m-4 ms-5 me-5">
+            <div (keydown.enter)="onSearch(1, currentSearchParam.pageSize)">
+                <div class="mb-3 d-flex">
+                    <form action="" #formFilter="ngForm" class="d-flex">
+                        <div class="d-flex align-items-center m-2" style="min-width: 15rem;">
+                            <label for="id" class="text-nowrap me-1">Group</label>
+                            <select class="form-select form-select-sm" ngModel name="groupId" id="">
+                                <option *ngFor="let item of groups" [value]="item.id">{{item.groupName}}</option>
+                            </select>
+                        </div>
+                        <div class="d-flex align-items-center m-2" style="min-width: 15rem;">
+                            <label for="id" class="text-nowrap me-1">word </label>
+                            <input class="form-control form-control-sm" ngModel name="word">
+                        </div>
+                    </form>
+                    <div class="ms-auto  d-flex align-items-center justify-content-end">
+                        <button class="me-auto d-flex" type="button" class="btn btn-sm shadow-none btn-primary"
+                            (click)="onSearch(1, currentSearchParam.pageSize)">
+                            Search
+                        </button>
+                        <div>
+                            <button type="button" class="btn btn-sm shadow-none btn-secondary m-2"
+                                (click)="openModalGroups()">
+                                New Group
+                            </button>
+
+                            <button type="button" class="btn btn-sm shadow-none btn-secondary m-2"
+                                (click)="openModalItems()">
+                                New Item
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="m-3 ms-5 me-5">
+            <table class="table table-sm table-bordered">
+                <thead class="table-light fw-light">
+                    <tr fw-light>
+                        <th class="fw-light">STT</th>
+                        <th class="fw-light">Id</th>
+                        <th class="fw-light">pronunciation</th>
+                        <th class="fw-light">group</th>
+                        <th class="fw-light">word</th>
+                        <th class="fw-light">description</th>
+                        <th class="fw-light">audioPath</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tbody" *ngFor="let item of items, let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{item.id}}</td>
+                        <td>{{item.pronunciation}}</td>
+                        <td>{{item.group.groupName}}</td>
+                        <td>{{item.word}}</td>
+                        <td>{{item.description}}</td>
+                        <td>{{item.audioPath}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- pagination -->
+            <div [hidden]="currentSearchParam.numFound===null && currentSearchParam.numFound<=0">
+                <div class="d-flex">
+                    <div class="ms-auto">
+                        <ngb-pagination [collectionSize]="currentSearchParam?.numFound"
+                            [page]="currentSearchParam?.currentPage"
+                            (pageChange)="onChangePage($event, currentSearchParam?.pageSize)"
+                            [pageSize]="currentSearchParam?.pageSize" [maxSize]="3" [rotate]="true" [ellipses]="false"
+                            [boundaryLinks]="true">
+                        </ngb-pagination>
+                    </div>
+                    <div class="ms-4">
+                        <select class="form-control" [(ngModel)]="currentSearchParam.pageSize"
+                            (change)="onChangePage(1, currentSearchParam?.pageSize)">
+                            <option *ngFor="let item of [].constructor(5); let i = index" [value]="(i + 1) * 10">
+                                {{(i + 1) * 10}}/ <div>trang</div>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #modalCreateItem let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Question</h4>
+        <button id="btnCloseModalEdit" type="button" class="btn btn-outline-dark btn-sm" aria-label="Close"
+            (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form class="container-fluid" [formGroup]="formCreateItem">
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">groupId</label>
+                <select class="form-select form-select-sm"
+                    [ngClass]="{ 'is-invalid': formCreateItem.get('groupId').invalid&&(formCreateItem.get('groupId').touched ||formCreateItem.get('groupId').dirty)}"
+                    formControlName="groupId" name="" id="">
+                    <option *ngFor="let item of groups" [value]="item.id">{{item.groupName}}</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">word</label>
+                <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreateItem.get('word').invalid &&(formCreateItem.get('word').touched ||formCreateItem.get('word').dirty)}"
+                    formControlName="word" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">pronunciation</label>
+                <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreateItem.get('pronunciation').invalid &&(formCreateItem.get('pronunciation').touched ||formCreateItem.get('pronunciation').dirty)}"
+                    formControlName="pronunciation" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">description</label>
+                <input type="text" class="form-control form-control-sm" formControlName="description" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">audioPath</label>
+                <input type="text" class="form-control form-control-sm" formControlName="audioPath" />
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="me-auto">
+            <button type="button" class="btn btn-sm btn-primary" (click)="onSubmitItem()">
+                Save
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="modal.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #modalCreateGroup let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">New Group</h4>
+        <button id="btnCloseModalEdit" type="button" class="btn btn-outline-dark btn-sm" aria-label="Close"
+            (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form class="container-fluid" [formGroup]="formCreateGroup">
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">groupName</label>
+                <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreateGroup.get('groupName').invalid &&(formCreateGroup.get('groupName').touched ||formCreateGroup.get('groupName').dirty)}"
+                    formControlName="groupName" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">groupImage</label>
+                <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreateGroup.get('groupImage').invalid &&(formCreateGroup.get('groupImage').touched ||formCreateGroup.get('groupImage').dirty)}"
+                    formControlName="groupImage" />
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="me-auto">
+            <button type="button" class="btn btn-sm btn-primary" (click)="onSubmitGroup()">
+                Save
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="modal.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</ng-template>

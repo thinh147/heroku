@@ -1,0 +1,84 @@
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <!-- filter -->
+        <div class="m-4 ms-5 me-5">
+            <div (keydown.enter)="onSearch(1, currentSearchParam.pageSize)">
+                <form action="" #formFilter="ngForm">
+                    <div class="mb-3 d-flex">
+                        <div class="d-flex align-items-center " style="min-width: 15rem;">
+                            <label for="id" class="text-nowrap me-1">Phone Number: </label>
+                            <input class="form-control form-control-sm" ngModel name="phoneNumber">
+                        </div>
+                        <div class="ms-auto  d-flex align-items-center justify-content-end">
+                            <button class="me-auto d-flex" type="button" class="btn btn-sm shadow-none btn-primary"
+                                (click)="onSearch(1, currentSearchParam.pageSize)">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="m-3 ms-5 me-5">
+            <table class="table table-sm table-bordered">
+                <thead class="table-light fw-light">
+                    <tr fw-light>
+                        <!-- id: number;
+                        cost: number;
+                        createdDate: []
+                        status: string;
+                        userInfo: {
+                        userId: number;
+                        name: string;
+                        } -->
+                        <th class="fw-light">Id</th>
+                        <th class="fw-light">cost</th>
+                        <th class="fw-light">status</th>
+                        <th class="fw-light">userId</th>
+                        <th class="fw-light">user Name</th>
+                        <th class="fw-light">createdDate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tbody" *ngFor="let payment of payments">
+                        <td>{{payment.id}}</td>
+                        <td>{{payment.cost}}</td>
+                        <td>{{payment.status}}</td>
+                        <td>{{payment.userInfo.userId}}</td>
+                        <td>{{payment.userInfo.name}}</td>
+                        <td>{{payment.createdDate[2]+':'+payment.createdDate[1]+':'+payment.createdDate[0]}}</td>
+                        <!-- <td>
+                            <button class="btn shadow-none btn-sm">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        </td> -->
+                    </tr>
+                </tbody>
+            </table>
+            <!-- pagination -->
+            <div [hidden]="currentSearchParam.numFound===null && currentSearchParam.numFound<=0">
+                <div class="d-flex">
+                    <div class="ms-auto">
+                        <ngb-pagination [collectionSize]="currentSearchParam?.numFound"
+                            [page]="currentSearchParam?.currentPage"
+                            (pageChange)="onChangePage($event, currentSearchParam?.pageSize)"
+                            [pageSize]="currentSearchParam?.pageSize" [maxSize]="3" [rotate]="true" [ellipses]="false"
+                            [boundaryLinks]="true">
+                        </ngb-pagination>
+                    </div>
+                    <div class="ms-4">
+                        <select class="form-control" [(ngModel)]="currentSearchParam.pageSize"
+                            (change)="onChangePage(1, currentSearchParam?.pageSize)">
+                            <option *ngFor="let item of [].constructor(5); let i = index" [value]="(i + 1) * 10">
+                                {{(i + 1) * 10}}/ <div>trang</div>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

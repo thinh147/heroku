@@ -1,0 +1,118 @@
+<div id="page-content-wrapper">
+    <div class="container-fluid">
+        <!-- filter -->
+        <div class="m-4 ms-5 me-5">
+            <div (keydown.enter)="onSearch(1, currentSearchParam.pageSize)">
+                <div class="mb-3 d-flex">
+                    <div class="d-flex align-items-center " style="min-width: 15rem;">
+                        <label for="id" class="text-nowrap me-1">Id: </label>
+                        <!-- <ng-multiselect-dropdown style="font-size: 0.875rem;" class="w-100" #multiSelect
+                            [settings]="settings" [data]="groups" [(ngModel)]="selectGroup">
+                        </ng-multiselect-dropdown> -->
+                        <!-- <input class="form-control form-control-sm" ngModel name="id"> -->
+                    </div>
+                    <div class="ms-auto  d-flex align-items-center justify-content-end">
+                        <button class="me-auto d-flex" type="button" class="btn btn-sm shadow-none btn-primary"
+                            (click)="onSearch(1, currentSearchParam.pageSize)">
+                            Search
+                        </button>
+                        <div>
+                            <button type="button" class="btn btn-sm shadow-none btn-secondary m-1"
+                                (click)="openModal('create',null)">
+                                New Exam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed -->
+        <div class="m-3 ms-5 me-5">
+            <table class="table table-sm table-bordered">
+                <thead class="table-light fw-light">
+                    <tr fw-light>
+                        <th class="fw-light">STT</th>
+                        <th class="fw-light">Id</th>
+                        <th class="fw-light">Duration</th>
+                        <th class="fw-light">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="tbody" *ngFor="let exam of exams, let i=index">
+                        <td>{{i+1}}</td>
+                        <td>{{exam.id}}</td>
+                        <td>{{exam.duration}}</td>
+                        <td>{{exam.description}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- pagination -->
+            <div [hidden]="currentSearchParam.numFound===null && currentSearchParam.numFound<=0">
+                <div class="d-flex">
+                    <div class="ms-auto">
+                        <ngb-pagination [collectionSize]="currentSearchParam?.numFound"
+                            [page]="currentSearchParam?.currentPage"
+                            (pageChange)="onChangePage($event, currentSearchParam?.pageSize)"
+                            [pageSize]="currentSearchParam?.pageSize" [maxSize]="3" [rotate]="true" [ellipses]="false"
+                            [boundaryLinks]="true">
+                        </ngb-pagination>
+                    </div>
+                    <div class="ms-4">
+                        <select class="form-control" [(ngModel)]="currentSearchParam.pageSize"
+                            (change)="onChangePage(1, currentSearchParam?.pageSize)">
+                            <option *ngFor="let item of [].constructor(5); let i = index" [value]="(i + 1) * 10">
+                                {{(i + 1) * 10}}/ <div>trang</div>
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #modalCreate let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Question</h4>
+        <button id="btnCloseModalEdit" type="button" class="btn btn-outline-dark btn-sm" aria-label="Close"
+            (click)="modal.dismiss('close')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form class="container-fluid" [formGroup]="formCreate">
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">type</label>
+                <select class="form-select form-select-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('typeId').invalid&&(formCreate.get('typeId').touched ||formCreate.get('typeId').dirty)}"
+                    formControlName="typeId" name="" id="">
+                    <option *ngFor="let item of typesModel" [value]="item.id">{{item.description}}</option>
+                </select>
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">duration</label>
+                <input type="text" class="form-control form-control-sm"
+                    [ngClass]="{ 'is-invalid': formCreate.get('duration').invalid &&(formCreate.get('duration').touched ||formCreate.get('duration').dirty)}"
+                    formControlName="duration" />
+            </div>
+            <div class="d-flex align-items-center m-3">
+                <label for="" class="text-nowrap" style="min-width: 10rem;">description</label>
+                <input type="text" class="form-control form-control-sm" formControlName="description" />
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <div class="me-auto">
+            <button type="button" class="btn btn-sm btn-primary" (click)="onSubmit()">
+                Save
+            </button>
+        </div>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary" (click)="modal.dismiss('close')">
+                Cancel
+            </button>
+        </div>
+    </div>
+</ng-template>
