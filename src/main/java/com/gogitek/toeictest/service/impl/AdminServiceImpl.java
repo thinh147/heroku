@@ -212,6 +212,19 @@ public class AdminServiceImpl implements AdminService {
         fileRepository.save(entity);
     }
 
+    @Override
+    public List<FileResponse> retrieveFileList(String fileName) {
+        return fileRepository
+                .findByFileNameLike(fileName)
+                .stream()
+                .map(item -> FileResponse
+                        .builder()
+                        .fileName(item.getFileName())
+                        .filePath(item.getFilePath())
+                        .build()
+                ).toList();
+    }
+
     @Transactional
     @Async
     protected void insertRelationTable(final ExamEntity examEntity, List<QuestionEntity> questionList) {

@@ -140,4 +140,9 @@ public class AdminController {
                 .setDetails("Upload successfully!")
                 .build();
     }
+
+    @GetMapping(AdminRoute.LOAD_FILE)
+    public ResponseEntity<?> loadFiles(@RequestParam(defaultValue = "") String fileName) {
+        return ResponseEntity.ok(adminService.retrieveFileList(fileName));
+    }
 }

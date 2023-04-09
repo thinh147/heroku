@@ -19,4 +19,5 @@ public interface AdminService {
     PaginationPage<UserAdminResponse> retrieveUserForAdminPage(Integer page, Integer size, String name);
     PaginationPage<ExamResponse> retrieveExamsForAdminPage(Integer page, Integer size);
     void upload(UploadFileRequest request);
+    List<FileResponse> retrieveFileList(String fileName);
 }
