@@ -3,13 +3,10 @@ package com.gogitek.toeictest.service.impl;
 import com.gogitek.toeictest.config.exception.ErrorCode;
 import com.gogitek.toeictest.config.exception.ToeicRuntimeException;
 import com.gogitek.toeictest.config.pagination.PaginationPage;
-import com.gogitek.toeictest.controller.dto.ExamRequest;
+import com.gogitek.toeictest.controller.dto.request.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.*;
 import com.gogitek.toeictest.controller.dto.response.*;
-import com.gogitek.toeictest.entity.ExamEntity;
-import com.gogitek.toeictest.entity.ExamQuestionEntity;
-import com.gogitek.toeictest.entity.QuestionEntity;
-import com.gogitek.toeictest.entity.VocabularyItemEntity;
+import com.gogitek.toeictest.entity.*;
 import com.gogitek.toeictest.mapper.ExamMapper;
 import com.gogitek.toeictest.mapper.QuestionMapper;
 import com.gogitek.toeictest.mapper.UserMapper;
@@ -19,9 +16,12 @@ import com.gogitek.toeictest.service.AdminService;
 
 import javax.transaction.Transactional;
 
+import com.gogitek.toeictest.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,13 @@ public class AdminServiceImpl implements AdminService {
     private final ExamMapper examMapper;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final FileRepository fileRepository;
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminServiceImpl.class);
+    private final FileStorageService fileStorageService;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     @Override
     @Transactional
     public void createQuestion(List<CreateQuestionRequest> request) {
@@ -190,6 +196,20 @@ public class AdminServiceImpl implements AdminService {
                 .setLimit(size)
                 .setTotalRecords(pageExam.getTotalElements())
                 .setRecords(pageExam.getContent().stream().map(examMapper::entityToResponse).toList());
+    }
+
+    @Override
+    public void upload(UploadFileRequest request) {
+        if(ObjectUtils.isEmpty(request.getFile())){
+            throw new ToeicRuntimeException(ErrorCode.FAILED);
+        }
+        var fileName = fileStorageService.storeFile(request.getFile());
+        var filePath = new StringBuilder(this.baseUrl);
+        var entity = FileEntity.builder()
+                .fileName(request.getFileName())
+                .filePath(filePath.append(fileName).toString())
+                .build();
+        fileRepository.save(entity);
     }
 
     @Transactional

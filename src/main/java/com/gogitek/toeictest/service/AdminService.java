@@ -1,7 +1,7 @@
 package com.gogitek.toeictest.service;
 
 import com.gogitek.toeictest.config.pagination.PaginationPage;
-import com.gogitek.toeictest.controller.dto.ExamRequest;
+import com.gogitek.toeictest.controller.dto.request.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.*;
 import com.gogitek.toeictest.controller.dto.response.*;
 
@@ -18,4 +18,5 @@ public interface AdminService {
     List<VocabularyGroupAdminResponse> retrieveGroupVocabulary();
     PaginationPage<UserAdminResponse> retrieveUserForAdminPage(Integer page, Integer size, String name);
     PaginationPage<ExamResponse> retrieveExamsForAdminPage(Integer page, Integer size);
+    void upload(UploadFileRequest request);
 }

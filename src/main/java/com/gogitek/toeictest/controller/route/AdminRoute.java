@@ -14,4 +14,6 @@ public class AdminRoute {
     public static final String LIST_ITEM = "/vocabularies/item";
     public static final String USER_LIST = "/user-lists";
     public static final String EXAM_LIST = "/exam-lists";
+    public static final String UPLOAD_FILE = "/upload";
+    public static final String LOAD_FILE = "/{fileName}";
 }

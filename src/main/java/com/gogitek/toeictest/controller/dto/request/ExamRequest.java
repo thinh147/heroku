@@ -1,4 +1,4 @@
-package com.gogitek.toeictest.controller.dto;
+package com.gogitek.toeictest.controller.dto.request;
 
 import lombok.*;
 

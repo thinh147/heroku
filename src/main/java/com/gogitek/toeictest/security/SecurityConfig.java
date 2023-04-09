@@ -89,6 +89,7 @@ public class SecurityConfig {
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/v2/api-docs")
                 .permitAll()
                 .antMatchers("/api/auth/**", "/api/files/**").permitAll()
+                .antMatchers("/files/**").permitAll()
                 .antMatchers("/api/admin/**").hasAuthority(Roles.ADMIN.name())
                 .antMatchers("/error").permitAll()
                 .anyRequest().authenticated()

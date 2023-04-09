@@ -1,7 +1,7 @@
 package com.gogitek.toeictest.controller;
 
 import com.gogitek.toeictest.config.response.ResponseEntityBuilder;
-import com.gogitek.toeictest.controller.dto.ExamRequest;
+import com.gogitek.toeictest.controller.dto.request.ExamRequest;
 import com.gogitek.toeictest.controller.dto.request.*;
 import com.gogitek.toeictest.controller.dto.response.AdminQuestionResponse;
 import com.gogitek.toeictest.controller.route.AdminRoute;
@@ -129,6 +129,15 @@ public class AdminController {
         return ResponseEntityBuilder
                 .getBuilder()
                 .setDetails(adminService.retrieveExamsForAdminPage(page, size))
+                .build();
+    }
+
+    @PostMapping(AdminRoute.UPLOAD_FILE)
+    public ResponseEntity<?> uploadFile(@ModelAttribute UploadFileRequest request){
+        adminService.upload(request);
+        return ResponseEntityBuilder
+                .getBuilder()
+                .setDetails("Upload successfully!")
                 .build();
     }
 }

@@ -39,6 +39,7 @@ app:
     tokenExpirationMsec: 864000000
   file:
     upload-dir: upload-file
+  base-url: https://toeic.gogitek.online/files/
 
 server:
   port: 6699
