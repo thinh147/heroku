@@ -11,5 +11,6 @@ public interface UserMapper {
     @Mapping(target = "fullName", source = "lastName")
     UserProfiles entityToResponse(UserEntity entity);
 
+    @Mapping(target = "fullName", source = "lastName")
     UserAdminResponse entityToAdminResponse(UserEntity user);
 }
